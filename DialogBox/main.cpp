@@ -18,14 +18,23 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
         if (hIcon) {
             SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-            SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
         }
-        return TRUE;
     }
 
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
+        case IDC_BUTTON_COPY:
+        {
+            CONST INT SIZE = 256; //
+            CHAR sz_buffer[SIZE] = {};
+            HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
+            HWND hEditPassword = GetDlgItem(hwnd, IDC_EDIT_PASSWORD);
+            SendMessage(hEditLogin, WM_GETTEXT, SIZE, (LPARAM)sz_buffer); //считываем текст из поля 'Login'
+            SendMessage(hEditPassword, WM_SETTEXT, 0, (LPARAM)sz_buffer); //загружаем текст из буфера в поле 'Password'
+            
+        }
+        break;
         case IDOK:
             MessageBox(hwnd, "Была нажата кнопка ОК", "Info", MB_OK | MB_ICONINFORMATION);
             break;
