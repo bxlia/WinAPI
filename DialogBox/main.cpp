@@ -1,6 +1,8 @@
 #include <Windows.h>
 #include "resource.h"
 
+CONST CHAR g_sz_INVITE[] = "Введите имя пользователя";
+
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
@@ -11,6 +13,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    //HWND - Handler to Window
+    //Это указатель, при помощи которого можно обратиться к окну
+    //(указатель, на который можнл отправить сообщение - SendMessage)
     switch (uMsg)
     {
     case WM_INITDIALOG:
@@ -19,11 +24,28 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         if (hIcon) {
             SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
         }
-    }
 
+        HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
+        SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)g_sz_INVITE);
+    }
+    break;
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
+        case IDC_EDIT_LOGIN:
+        {
+            //WPARAM - это DWORD
+            CONST INT SIZE = 256; 
+            CHAR sz_buffer[SIZE] = {};
+            HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
+            SendMessage(hEditLogin, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
+            if(HIWORD(wParam) == EN_SETFOCUS && strcmp(sz_buffer, g_sz_INVITE) == 0)
+                SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)"");
+            if(HIWORD(wParam) == EN_KILLFOCUS && strcmp(sz_buffer, "") == 0)
+                SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)g_sz_INVITE);
+
+        }
+            break;
         case IDC_BUTTON_COPY:
         {
             CONST INT SIZE = 256; //
@@ -36,7 +58,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         break;
         case IDOK:
-            MessageBox(hwnd, "Вы выбрали пункт №... со значением ......", "Info", MB_OK | MB_ICONINFORMATION);
+            MessageBox(hwnd, "OK", "Info", MB_OK | MB_ICONINFORMATION);
             break;
 
         case IDCANCEL:
