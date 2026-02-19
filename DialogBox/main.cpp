@@ -36,7 +36,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         break;
         case IDOK:
-            MessageBox(hwnd, "Была нажата кнопка ОК", "Info", MB_OK | MB_ICONINFORMATION);
+            MessageBox(hwnd, "Вы выбрали пункт №... со значением ......", "Info", MB_OK | MB_ICONINFORMATION);
             break;
 
         case IDCANCEL:

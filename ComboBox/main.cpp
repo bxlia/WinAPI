@@ -18,14 +18,23 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPARAM)
 	{
 	case WM_INITDIALOG:
 	{
-		HWND hCombo = GetDlgItem(hwnd, IDC_COMBO);
-		//AllocConsole();
-		for (int i = 0; i < sizeof(ITEMS) / sizeof(ITEMS[0]); i++)
-		{
-			// std::cout << ITEMS[i] << std::endl;
-			SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)ITEMS[i]);
+		HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
+		if (hIcon) {
+			SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
 		}
 	}
+		{
+			HWND hCombo = GetDlgItem(hwnd, IDC_COMBO);
+			//AllocConsole();
+			for (int i = 0; i < sizeof(ITEMS) / sizeof(ITEMS[0]); i++)
+			{
+				// std::cout << ITEMS[i] << std::endl;
+				SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)ITEMS[i]);
+			}
+		}
+		break;
+	case IDOK:
+		MessageBox(hwnd, "Вы выбрали пункт №... со значением .....", "Info", MB_OK | MB_ICONINFORMATION);
 		break;
 	case WM_COMMAND:
 		break;
