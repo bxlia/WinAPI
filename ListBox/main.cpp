@@ -1,5 +1,6 @@
 #include<Windows.h>
 #include<iostream>
+#include<cstdio>
 #include"resource.h"
 
 CONST CHAR* ITEMS[] = { "This", "is", "my", "fitst", "List", "Box" };
@@ -38,14 +39,18 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPARAM)
         {
         case IDOK:
         {
-            CONST INT SIZE = 156;
+            CONST INT SIZE = 256;
             CHAR sz_buffer[SIZE] = {};
+            CHAR sz_message[SIZE] = {};
             HWND hCombo = GetDlgItem(hwnd, IDC_LIST);
 
             INT i = SendMessage(hCombo, CB_GETCURSEL, 0, 0); //Получаем номер выбранного текста
-
-            SendMessage(hCombo, CB_GETLBTEXT, i, (LPARAM)sz_buffer); //Считываем содержимое выбранной строки в строке буфер
-
+            if (i != CB_ERR)
+            {
+                SendMessage(hCombo, CB_GETLBTEXT, i, (LPARAM)sz_buffer); //Считываем содержимое выбранной строки в строке буфер
+                sprintf_s(sz_message, SIZE, "Вы выбрали пункт №%d со значением \"%s\".", i + 1, sz_buffer);
+                MessageBox(hwnd, sz_message, "Info", MB_OK | MB_ICONINFORMATION);
+            }
 
         }
         break;
