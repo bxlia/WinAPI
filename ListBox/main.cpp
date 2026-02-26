@@ -117,7 +117,6 @@ BOOL CALLBACK DlgProcAdd(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             {
                 HWND hParent = GetParent(hwnd); //Получаем родительское окно
                 HWND hListBox = GetDlgItem(hParent, IDC_LIST); //Получаем ListBox родительского окна
-                if SendMessage(hListBox, LB_FINDSTRING, 0, (LPARAM)szBuffer) == LB_ERR;
                 SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)szBuffer);
             }
 
@@ -138,3 +137,59 @@ BOOL CALLBACK DlgProcAdd(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return FALSE;
 }
 
+BOOL CALLBACK DlgProcEdit(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    static int iSelectedItem = -1; 
+
+    switch (uMsg)
+    {
+    case WM_INITDIALOG:
+    {
+        iSelectedItem = (int)lParam;
+        HWND hMainDialog = GetParent(hwnd);
+        HWND hList = GetDlgItem(hMainDialog, IDC_LIST);
+
+        CHAR szBuffer[256] = {};
+        SendMessage(hList, LB_GETTEXT, iSelectedItem, (LPARAM)szBuffer);
+
+        HWND hEdit = GetDlgItem(hwnd, IDC_EDIT_ADD);
+        SetWindowText(hEdit, szBuffer);
+
+        SetFocus(hEdit);
+        return FALSE;
+    }
+
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+        {
+            CHAR szBuffer[256] = {};
+            HWND hEdit = GetDlgItem(hwnd, IDC_EDIT_ADD);
+            GetWindowText(hEdit, szBuffer, 256);
+
+            if (strlen(szBuffer) > 0 && iSelectedItem != -1)
+            {
+                HWND hMainDialog = GetParent(hwnd);
+                HWND hList = GetDlgItem(hMainDialog, IDC_LIST);
+                SendMessage(hList, LB_DELETESTRING, iSelectedItem, 0);
+                SendMessage(hList, LB_INSERTSTRING, iSelectedItem, (LPARAM)szBuffer);
+                SendMessage(hList, LB_SETCURSEL, iSelectedItem, 0);
+            }
+
+            EndDialog(hwnd, IDOK);
+        }
+        break;
+
+        case IDCANCEL:
+            EndDialog(hwnd, IDCANCEL);
+            break;
+        }
+        break;
+
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCANCEL);
+        break;
+    }
+    return FALSE;
+}
